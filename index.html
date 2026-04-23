@@ -6,17 +6,6 @@
   <title>MolagRUbal Brewer</title>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    /* Анимация плавного появления */
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(30px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .hero-logo { animation: fadeInUp 0.8s ease-out; }
-    .hero-image { animation: fadeInUp 0.8s ease-out 0.2s both; }
-    .hero-title { animation: fadeInUp 0.8s ease-out 0.4s both; }
-    .hero-subtitle { animation: fadeInUp 0.8s ease-out 0.6s both; }
-    .scroll-btn { animation: fadeInUp 0.8s ease-out 0.8s both; }
-
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'Space Grotesk', sans-serif;
@@ -149,25 +138,73 @@
       gap: 20px;
     }
     
-    /* ===== NEW CARD DESIGN ===== */
+    /* ===== CARD DESIGN ===== */
     .card {
-      background: linear-gradient(180deg, #e8e8e8 0%, #1a1a1a 100%);
-      border-radius: 20px;
+      height: 544px !important;
+      border-radius: 24px;
       overflow: hidden;
-      position: relative;
-      min-height: 420px;
+      background: linear-gradient(180deg, #F0F0F0 0%, #1A1A1A 100%);
       display: flex;
       flex-direction: column;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+      position: relative;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
       transition: transform 0.3s ease;
     }
-    
+
     .card:hover {
-      transform: translateY(-6px);
+      transform: translateY(-5px);
     }
-    
-    /* Тёмная морда для светлой части карточки */
-    .card-watermark-dark {
+
+    /* Контейнер для фото */
+    .card-image-container {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 30px 20px;
+      position: relative;
+      z-index: 2;
+      min-height: 0;
+    }
+
+    /* Само фото */
+    .card-image-container img {
+      max-height: 100%;
+      max-width: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 10px 15px rgba(0,0,0,0.2));
+    }
+
+    /* Рейтинг в углу */
+    .card-rating {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background-color: #000000;
+      color: #ffffff;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 700;
+      z-index: 4;
+    }
+
+    /* Блок с текстом и кнопками внизу */
+    .card-content {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 20px;
+      z-index: 3;
+      color: #ffffff;
+      background: linear-gradient(to top, rgba(0,0,0,0.95) 10%, rgba(0,0,0,0) 100%);
+      border-bottom-left-radius: 24px;
+      border-bottom-right-radius: 24px;
+    }
+
+    /* Морда кота на фоне */
+    .card-watermark {
       position: absolute;
       top: 0;
       left: 0;
@@ -179,9 +216,10 @@
       background-repeat: no-repeat;
       opacity: 0.25;
       z-index: 1;
+      pointer-events: none;
     }
-    
-    /* Светлая морда для тёмной части (подробная информация) */
+
+    /* Светлая морда для развёрнутой карточки */
     .card-watermark-light {
       position: absolute;
       top: 0;
@@ -195,122 +233,65 @@
       opacity: 0.1;
       z-index: 1;
       display: none;
+      pointer-events: none;
     }
-    
-    .card.expanded .card-watermark-dark {
+
+    .card.expanded .card-watermark {
       display: none;
     }
-    
+
     .card.expanded .card-watermark-light {
       display: block;
     }
-    
-    .card-rating {
-      position: absolute;
-      top: 14px;
-      left: 14px;
-      background: #000;
-      color: #fff;
-      padding: 5px 10px;
-      border-radius: 16px;
-      font-size: 0.7rem;
-      font-weight: 700;
-      z-index: 3;
-    }
-    
-    .card-beer-image {
-      position: relative;
-      z-index: 2;
-      width: 100%;
-      height: 55%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 30px 15px 10px;
-    }
-    
-    .card-beer-image img {
-      max-height: 100%;
-      max-width: 85%;
-      object-fit: contain;
-      filter: drop-shadow(0 4px 16px rgba(0,0,0,0.3));
-    }
-    
-    .card-content {
-      position: relative;
-      z-index: 2;
-      background: linear-gradient(180deg, transparent 0%, #1a1a1a 30%);
-      padding: 16px;
-      flex-grow: 1;
-      display: flex;
-      flex-direction: column;
-    }
-    
-    .card-title {
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: #fff;
-      margin-bottom: 6px;
-      text-transform: uppercase;
-      line-height: 1.2;
-    }
-    
-    .card-brand {
-      font-size: 0.85rem;
-      color: #ccc;
-      margin-bottom: 16px;
-    }
-    
+
+    /* Стили для кнопок внутри карточки */
     .card-buttons {
-      margin-top: auto;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 10px;
+      margin-top: 15px;
     }
-    
+
     .btn {
-      padding: 12px 16px;
+      padding: 12px;
       border-radius: 14px;
       font-family: 'Space Grotesk', sans-serif;
-      font-size: 0.85rem;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.3s;
-      border: none;
+      transition: all 0.2s;
       text-align: center;
+      border: none;
+      font-size: 15px;
     }
-    
+
     .btn-primary {
-      background: #fff;
-      color: #000;
+      background: #ffffff;
+      color: #000000;
     }
-    
+
     .btn-primary:hover {
-      background: #f0f0f0;
-      transform: scale(1.02);
+      background: #e0e0e0;
     }
-    
+
     .btn-secondary {
       background: transparent;
-      color: #fff;
-      border: 2px solid rgba(255,255,255,0.4);
+      color: #ffffff;
+      border: 1px solid rgba(255,255,255,0.3);
     }
-    
+
     .btn-secondary:hover {
-      background: #fff;
-      color: #000;
-      border-color: #fff;
+      border-color: #ffffff;
     }
-    
+
     /* ===== EXPANDED CARD ===== */
     .card.expanded .card-content {
       display: none;
     }
-    
-    .card.expanded .card-beer-image {
+
+    .card.expanded .card-image-container {
       display: none;
     }
-    
+
     .card-details {
       display: none;
       position: absolute;
@@ -324,15 +305,15 @@
       overflow-y: auto;
       color: #fff;
     }
-    
+
     .card.expanded .card-details {
       display: block;
     }
-    
+
     .detail-section {
       margin-bottom: 18px;
     }
-    
+
     .detail-label {
       font-size: 0.7rem;
       color: #888;
@@ -341,22 +322,22 @@
       font-weight: 600;
       letter-spacing: 0.05em;
     }
-    
+
     .detail-value {
       font-size: 0.9rem;
       line-height: 1.5;
       color: #fff;
     }
-    
+
     .detail-value.verdict {
       font-size: 1rem;
       font-weight: 600;
     }
-    
+
     .detail-value.verdict.positive::before {
       content: "✅ ";
     }
-    
+
     .detail-value.verdict.negative::before {
       content: "❌ ";
     }
@@ -524,44 +505,43 @@
         const card = document.createElement('div');
         card.className = 'card';
         
-        card.innerHTML = 
-          '<div class="card-rating">' + b.rating + '/5</div>' +
-          '<div class="card-watermark-dark"></div>' +
-          '<div class="card-watermark-light"></div>' +
-          '<div class="card-beer-image">' +
-            '<img src="' + b.img + '" alt="' + b.name + '" loading="lazy" onerror="this.src=\'https://via.placeholder.com/300x400?text=Нет+фото\'">' +
-          '</div>' +
-          '<div class="card-content">' +
-            '<div class="card-title">' + b.name + '</div>' +
-            '<div class="card-brand">' + b.brand + ' • ' + b.abv + '% • ' + b.country + '</div>' +
-            '<div class="card-buttons">' +
-              '<button class="btn btn-primary" data-id="' + b.id + '">' +
-                (tried ? funnyPhrases[b.id % funnyPhrases.length] : 'Пробовал?') +
-              '</button>' +
-              '<button class="btn btn-secondary btn-details">Подробнее</button>' +
-            '</div>' +
-          '</div>' +
-          '<div class="card-details">' +
-            '<div class="detail-section">' +
-              '<div class="detail-label">Вердикт</div>' +
-              '<div class="detail-value verdict ' + verdictClass + '">' + verdict + '</div>' +
-            '</div>' +
-            '<div class="detail-section">' +
-              '<div class="detail-label">Стиль</div>' +
-              '<div class="detail-value">' + b.style + '</div>' +
-            '</div>' +
-            '<div class="detail-section">' +
-              '<div class="detail-label">Где купить</div>' +
-              '<div class="detail-value">' + b.where + '</div>' +
-            '</div>' +
-            '<div class="detail-section">' +
-              '<div class="detail-label">Вкус</div>' +
-              '<div class="detail-value">' + b.taste + '</div>' +
-            '</div>' +
-            '<div class="card-buttons" style="margin-top: 24px;">' +
-              '<button class="btn btn-primary btn-close">Скрыть</button>' +
-            '</div>' +
-          '</div>';
+        card.innerHTML = `
+          <div class="card-rating">${b.rating}/5</div>
+          <div class="card-watermark"></div>
+          <div class="card-watermark-light"></div>
+          <div class="card-image-container">
+            <img src="${b.img}" alt="${b.name}" loading="lazy" onerror="this.src='https://via.placeholder.com/300x400?text=Нет+фото'">
+          </div>
+          <div class="card-content">
+            <h3 style="margin: 0 0 5px 0; font-size: 1.2rem; text-transform: uppercase;">${b.name}</h3>
+            <p style="margin: 0 0 5px 0; font-size: 0.9rem; opacity: 0.8;">${b.brand} • ${b.abv}% • ${b.country}</p>
+            <div class="card-buttons">
+              <button class="btn btn-primary" data-id="${b.id}">${tried ? funnyPhrases[b.id % funnyPhrases.length] : 'Пробовал?'}</button>
+              <button class="btn btn-secondary btn-details">Подробнее</button>
+            </div>
+          </div>
+          <div class="card-details">
+            <div class="detail-section">
+              <div class="detail-label">Вердикт</div>
+              <div class="detail-value verdict ${verdictClass}">${verdict}</div>
+            </div>
+            <div class="detail-section">
+              <div class="detail-label">Стиль</div>
+              <div class="detail-value">${b.style}</div>
+            </div>
+            <div class="detail-section">
+              <div class="detail-label">Где купить</div>
+              <div class="detail-value">📍 ${b.where}</div>
+            </div>
+            <div class="detail-section">
+              <div class="detail-label">Вкус</div>
+              <div class="detail-value">${b.taste}</div>
+            </div>
+            <div class="card-buttons" style="margin-top: 24px;">
+              <button class="btn btn-primary btn-close">Скрыть</button>
+            </div>
+          </div>
+        `;
         
         grid.appendChild(card);
       });
