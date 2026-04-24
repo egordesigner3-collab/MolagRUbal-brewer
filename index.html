@@ -21,58 +21,74 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      padding: 40px 20px 60px;
+      padding: 40px 20px;
       text-align: center;
       background: #fff;
     }
-    .hero-logo {
-      font-size: 0.8rem;
-      font-weight: 600;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
+    
+    .hero-top {
       margin-bottom: 40px;
-      padding-bottom: 6px;
-      border-bottom: 1px solid #000;
     }
-    .hero-image {
-      width: 220px;
-      height: 220px;
-      border-radius: 50%;
-      border: 2px solid #000;
-      object-fit: cover;
-      margin-bottom: 30px;
-      transition: transform 0.3s ease;
+    
+    .hero-brand {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 15px;
+      color: #000;
     }
-    .hero-image:hover { transform: scale(1.05); }
-    .hero-title {
-      font-size: clamp(2.5rem, 7vw, 5rem);
+    
+    .hero-cat {
+      width: 280px;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+    }
+    
+    .hero-main-title {
+      font-size: clamp(3rem, 12vw, 8rem);
       font-weight: 700;
-      line-height: 1;
+      line-height: 1.1;
       letter-spacing: -0.03em;
       text-transform: uppercase;
       margin-bottom: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
     }
-    .hero-subtitle {
-      font-size: 0.8rem;
-      font-weight: 500;
-      letter-spacing: 0.15em;
+    
+    .hero-main-title span {
+      display: block;
+    }
+    
+    .hero-desc {
+      font-size: 0.75rem;
+      font-weight: 400;
+      letter-spacing: 0.2em;
       text-transform: uppercase;
       color: #666;
       margin-bottom: 40px;
     }
-    .scroll-btn {
-      padding: 14px 32px;
+    
+    .hero-btn {
+      padding: 14px 40px;
       background: #000;
       color: #fff;
       text-decoration: none;
       font-weight: 600;
       font-size: 0.8rem;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.05em;
       text-transform: uppercase;
       transition: all 0.3s;
-      border: 1px solid #000;
+      border-radius: 50px;
+      border: 2px solid #000;
     }
-    .scroll-btn:hover { background: #fff; color: #000; }
+    
+    .hero-btn:hover {
+      background: #fff;
+      color: #000;
+    }
 
     /* ===== LIBRARY SECTION ===== */
     .library { padding: 60px 20px; max-width: 1400px; margin: 0 auto; }
@@ -363,10 +379,11 @@
     @media (max-width: 640px) {
       .grid { grid-template-columns: 1fr; }
       .controls { grid-template-columns: 1fr; }
-      .hero-title { font-size: 2.2rem; }
-      .hero-image { width: 160px; height: 160px; }
-      .hero-subtitle { font-size: 0.7rem; }
-      .scroll-btn { padding: 10px 24px; font-size: 0.75rem; }
+      .hero-brand { font-size: 0.6rem; }
+      .hero-cat { width: 200px; }
+      .hero-main-title { font-size: clamp(2rem, 8vw, 4rem); }
+      .hero-desc { font-size: 0.7rem; }
+      .hero-btn { padding: 12px 30px; font-size: 0.75rem; }
       .section-header { flex-direction: column; align-items: flex-start; }
       .section-title { font-size: 1.8rem; }
       .beer-counter { font-size: 0.75rem; padding: 8px 16px; }
@@ -377,11 +394,16 @@
 
   <!-- HERO SECTION -->
   <section class="hero">
-    <div class="hero-logo">MolagRUbal Brewer</div>
-    <img src="img/logo.png" alt="Cat Logo" class="hero-image">
-    <h1 class="hero-title">Welcome To The Beerdom</h1>
-    <p class="hero-subtitle">Честная библиотека проверенного пива</p>
-    <a href="#library" class="scroll-btn">В библиотеку</a>
+    <div class="hero-top">
+      <div class="hero-brand">MOLAGRUBAL BREWER</div>
+      <img src="img/logo.png" alt="Cat Logo" class="hero-cat">
+    </div>
+    <h1 class="hero-main-title">
+      <span>WELCOME TO</span>
+      <span>THE BEERDOM</span>
+    </h1>
+    <p class="hero-desc">ЧЕСТНАЯ БИБЛИОТЕКА ПРОВЕРЕННОГО ПИВА</p>
+    <a href="#library" class="hero-btn">В библиотеку</a>
   </section>
 
   <!-- LIBRARY SECTION -->
