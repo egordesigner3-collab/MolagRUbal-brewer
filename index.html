@@ -440,7 +440,11 @@
         beerCounter.textContent = `ВСЕГО ПИВАСОВ: ${beers.length}`;
         
         const countries = [...new Set(beers.map(b => b.country))].sort();
-        const styles = [...new Set(beers.map(b => b.style))].sort();
+        // Извлекаем только основную часть стиля (до скобки)
+        const styles = [...new Set(beers.map(b => {
+          const style = b.style.split('(')[0].trim();
+          return style;
+        }))].sort();
         const ratings = [...new Set(beers.map(b => b.rating))].sort((a, b) => b - a);
         countries.forEach(c => fCountry.innerHTML += '<option value="' + c + '">' + c + '</option>');
         styles.forEach(s => fStyle.innerHTML += '<option value="' + s + '">' + s + '</option>');
