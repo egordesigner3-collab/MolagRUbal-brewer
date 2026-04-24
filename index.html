@@ -282,9 +282,12 @@
       z-index: 10;
       padding: 20px;
       color: #fff;
-      /* Убрали overflow-y: auto отсюда */
-      display: flex;
       flex-direction: column;
+    }
+
+    /* Показываем card-details только когда карточка развернута */
+    .card.expanded .card-details {
+      display: flex;
     }
 
     /* Добавим прокрутку только для секции с вкусом, если нужно */
@@ -300,10 +303,6 @@
     .taste-section::-webkit-scrollbar-thumb {
       background: rgba(255,255,255,0.3);
       border-radius: 3px;
-    }
-
-    .card.expanded .card-details {
-      display: block;
     }
 
     .detail-section {
