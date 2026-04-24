@@ -205,15 +205,21 @@
       display: none;
     }
     
-    /* ===== 5. БЛОК С ТЕКСТОМ (Градиент ТОЛЬКО тут) ===== */
+    /* ===== 5. БЛОК С ТЕКСТОМ (Градиент 300px) ===== */
     .card-content {
       position: relative;
-      padding: 20px 20px 40px 20px; /* Увеличил отступ снизу для кнопок */
-      min-height: 330px; /* <-- ГЛАВНОЕ: фиксированная высота, чтобы градиент был выше */
+      padding: 20px 20px 40px 20px; /* Чуть больше отступ снизу для кнопок */
       z-index: 3;
       color: #ffffff;
+      
+      /* КЛЮЧЕВЫЕ НАСТРОЙКИ */
+      min-height: 300px; /* Фиксируем высоту градиента */
+      display: flex; /* Включаем гибкую верстку */
+      flex-direction: column; /* Элементы друг под другом */
+      justify-content: flex-end; /* ПРИЖИМАЕМ ВСЁ (текст и кнопки) К НИЗУ */
+      
       background: linear-gradient(to top, rgba(0,0,0,0.95) 15%, rgba(0,0,0,0) 100%);
-      margin-top: auto;
+      margin-top: auto; /* Прижимает сам текстовый блок к низу карточки */
       border-bottom-left-radius: 24px;
       border-bottom-right-radius: 24px;
     }
