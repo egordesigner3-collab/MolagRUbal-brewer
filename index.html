@@ -549,7 +549,14 @@
       });
 
       document.querySelectorAll('.btn-details').forEach(btn => {
-        btn.addEventListener('click', function() { this.closest('.card').classList.add('expanded'); });
+        btn.addEventListener('click', function() {
+          // Сначала сворачиваем ВСЕ открытые карточки
+          document.querySelectorAll('.card.expanded').forEach(card => {
+            card.classList.remove('expanded');
+          });
+          // Потом разворачиваем ту, на которую нажали
+          this.closest('.card').classList.add('expanded');
+        });
       });
 
       document.querySelectorAll('.btn-close').forEach(btn => {
