@@ -556,6 +556,32 @@
     let beers = [];
     let activeTriedCardId = null; // Запоминаем ID карточки, где сейчас показана фраза
 
+        // === УМНЫЙ ПОИСК: СЛОВАРЬ РАСКЛАДОК ===
+    // Карта соответствия клавиш: русская буква -> английская
+    const layoutMap = {
+        'ф': 'a', 'ы': 'b', 'в': 'c', 'а': 'h', 'п': 'e', 'р': 'h', 'о': 'j', 'л': 'd', 'д': 'l', 'ж': ';', 'э': '\'',
+        'й': 'q', 'ц': 'w', 'у': 'e', 'к': 'r', 'е': 't', 'н': 'y', 'г': 'u', 'ш': 'i', 'щ': 'o', 'з': 'p', 'х': '[', 'ъ': ']',
+        'я': 'z', 'ч': 'x', 'с': 's', 'м': 'n', 'и': 'b', 'т': 'n', 'ь': 'm', 'б': ',', 'ю': '.'
+    };
+    // Обратная карта (англ -> рус)
+    const reverseLayoutMap = {};
+    for (let ru in layoutMap) { reverseLayoutMap[layoutMap[ru]] = ru; }
+
+    // Функция конвертации текста из одной раскладки в другую
+    function convertLayout(text) {
+        return text.split('').map(char => {
+            const lower = char.toLowerCase();
+            const upper = char.toUpperCase();
+            if (layoutMap[lower]) {
+                return char === lower ? layoutMap[lower] : layoutMap[lower].toUpperCase();
+            }
+            if (reverseLayoutMap[lower]) {
+                return char === lower ? reverseLayoutMap[lower] : reverseLayoutMap[lower].toUpperCase();
+            }
+            return char;
+        }).join('');
+    }
+    
     async function loadBeers() {
       try {
         const response = await fetch('beers.json');
@@ -588,10 +614,37 @@
       const sort = fSort.value;
 
       let filtered = beers.filter(b => {
-        const matchQ = !q || b.name.toLowerCase().includes(q) || b.brand.toLowerCase().includes(q);
+        // 1. Подготовка поискового запроса
+        const cleanQuery = q.toLowerCase().trim();
+        
+        // Если запрос пустой — пропускаем все (поиск не активен)
+        const matchQ = !cleanQuery || (() => {
+            // Проверяем совпадение в оригинальном виде
+            const name = b.name.toLowerCase();
+            const brand = b.brand.toLowerCase();
+            
+            if (name.includes(cleanQuery) || brand.includes(cleanQuery)) return true;
+            
+            // 2. Если не совпало, пробуем конвертировать раскладку запроса
+            // (Например, пользователь ввел "[fknbrf" вместо "Балтика")
+            const convertedQuery = convertLayout(cleanQuery);
+            if (convertedQuery && convertedQuery !== cleanQuery) {
+                if (name.includes(convertedQuery.toLowerCase()) || brand.includes(convertedQuery.toLowerCase())) {
+                    return true;
+                }
+            }
+            
+            // 3. Пробуем конвертировать само название пива (для надежности)
+            const convertedName = convertLayout(name);
+            if (convertedName.includes(cleanQuery)) return true;
+            
+            return false;
+        })();
+
         const matchC = !c || b.country === c;
         const matchS = !s || b.styleCategory === s;
         const matchR = !r || b.rating === parseInt(r);
+        
         return matchQ && matchC && matchS && matchR;
       });
 
