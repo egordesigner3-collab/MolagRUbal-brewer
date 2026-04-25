@@ -554,6 +554,7 @@
     const fSort = document.getElementById('f-sort');
     const beerCounter = document.getElementById('beerCounter');
     let beers = [];
+    let activeTriedCardId = null; // Запоминаем ID карточки, где сейчас показана фраза
 
     async function loadBeers() {
       try {
@@ -603,7 +604,14 @@
         grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px;">Ничего не найдено</div>';
         return;
       }
-
+      // Сбрасываем текст кнопки у предыдущей активной карточки, если она есть в текущем списке
+      if (activeTriedCardId !== null) {
+        const prevBtn = document.querySelector(`.btn-primary[data-id="${activeTriedCardId}"]`);
+        if (prevBtn && !prevBtn.classList.contains('btn-details')) {
+           prevBtn.textContent = 'Пробовал?';
+        }
+        activeTriedCardId = null;
+      }
       filtered.forEach(b => {
         const tried = localStorage.getItem('beer_' + b.id) === 'true';
         // Определяем вердикт по рейтингу
@@ -627,10 +635,10 @@
           <div class="card-rating">${b.rating}</div>
           <div class="card-content">
             <h3 style="margin: 0 0 5px 0; font-size: 1.2rem; text-transform: uppercase; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">${b.name}</h3>
-            <p style="margin: 0 0 15px 0; font-size: 0.9rem; opacity: 0.9; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">${b.brand} • ${b.abv}% • ${b.country}</p>
-            <div class="card-buttons">
-              <button class="btn btn-primary" data-id="${b.id}">${tried ? funnyPhrases[b.id % funnyPhrases.length] : 'Пробовал?'}</button>
+            <p style="margin: 0 0 15px 0; font-size: 0.9rem; opacity: 0.9; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">${b.brand} • ${b.abv}% • ${b.country}            <div class="card-buttons">
+              <button class="btn btn-primary" data-id="${b.id}">Пробовал?</button>
               <button class="btn btn-secondary btn-details">Подробнее</button>
+            </div>
             </div>
           </div>
           <div class="card-details">
@@ -695,21 +703,63 @@
         });
       });
 
-      document.querySelectorAll('.btn-details').forEach(btn => {
-        btn.addEventListener('click', function() {
-          // Сначала сворачиваем ВСЕ открытые карточки
-          document.querySelectorAll('.card.expanded').forEach(card => {
-            card.classList.remove('expanded');
-          });
-          // Потом разворачиваем ту, на которую нажали
-          this.closest('.card').classList.add('expanded');
+      // Обработчики кнопок "Пробовал?"
+      document.querySelectorAll('.btn-primary:not(.btn-close)').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+          if (this.classList.contains('btn-details') || this.classList.contains('btn-close')) return;
+          
+          const id = this.getAttribute('data-id');
+          
+          // 1. Если кликнули на ту же кнопку, где уже есть фраза — просто сбрасываем её
+          if (activeTriedCardId === id) {
+             localStorage.setItem('beer_' + id, 'false');
+             activeTriedCardId = null;
+             render(); // Перерисовываем, чтобы вернуть кнопку "Пробовал?"
+             return;
+          }
+
+          const current = localStorage.getItem('beer_' + id) === 'true';
+          
+          if (!current) {
+            localStorage.setItem('beer_' + id, 'true');
+            
+            // Находим пиво по ID и получаем его рейтинг
+            const beer = beers.find(b => b.id == id);
+            const rating = beer ? beer.rating : 3;
+            
+            // Получаем фразы для этого рейтинга
+            const phrases = ratingPhrases[rating] || ratingPhrases[3];
+            
+            // Выбираем случайную фразу
+            const randomPhrase = phrases[Math.floor(Math.random() * phrases.length)];
+            
+            // 2. СБРАСЫВАЕМ ПРЕДЫДУЩУЮ АКТИВНУЮ КНОПКУ (если она есть)
+            if (activeTriedCardId !== null) {
+              const prevBtn = document.querySelector(`.btn-primary[data-id="${activeTriedCardId}"]`);
+              if (prevBtn) prevBtn.textContent = 'Пробовал?';
+            }
+            
+            // 3. ПОКАЗЫВАЕМ ФРАЗУ В ТЕКУЩЕЙ КНОПКЕ
+            this.textContent = randomPhrase;
+            
+            // 4. ЗАПОМИНАЕМ ЭТУ КАРТОЧКУ КАК АКТИВНУЮ
+            activeTriedCardId = id;
+
+            // Через 3 секунды автоматически сбрасываем
+            setTimeout(() => { 
+              localStorage.setItem('beer_' + id, 'false'); 
+              activeTriedCardId = null;
+              render(); 
+            }, 3000);
+            
+          } else {
+            // Если вдруг localstorage говорит true, а текста нет — сбрасываем
+            localStorage.setItem('beer_' + id, 'false');
+            activeTriedCardId = null;
+            render();
+          }
         });
       });
-
-      document.querySelectorAll('.btn-close').forEach(btn => {
-        btn.addEventListener('click', function() { this.closest('.card').classList.remove('expanded'); });
-      });
-    }
 
     searchInput.addEventListener('input', render);
     fCountry.addEventListener('change', render);
