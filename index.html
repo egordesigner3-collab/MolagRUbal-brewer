@@ -230,11 +230,21 @@
       left: 20px;
       background-color: #000000;
       color: #ffffff;
-      padding: 6px 12px;
+      padding: 6px 14px;
       border-radius: 20px;
-      font-size: 14px;
+      font-size: 16px;
       font-weight: 700;
       z-index: 4;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    
+    .card-rating::before {
+      content: "★";
+      color: #ffffff;
+      font-size: 18px;
+      line-height: 1;
     }
 
     /* ===== 4. WATERMARK БОЛЬШЕ НЕ НУЖЕН ===== */
@@ -557,7 +567,7 @@
         card.innerHTML = `
           <div class="card-watermark"></div>
           <img src="${b.img}" class="card-bg-image" alt="${b.name}" loading="lazy" onerror="this.src='https://via.placeholder.com/300x540?text=Нет+фото'">
-          <div class="card-rating">${b.rating}/5</div>
+          <div class="card-rating">★ ${b.rating}</div>
           <div class="card-content">
             <h3 style="margin: 0 0 5px 0; font-size: 1.2rem; text-transform: uppercase; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">${b.name}</h3>
             <p style="margin: 0 0 15px 0; font-size: 0.9rem; opacity: 0.9; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">${b.brand} • ${b.abv}% • ${b.country}</p>
