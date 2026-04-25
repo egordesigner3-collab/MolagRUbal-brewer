@@ -635,7 +635,8 @@
           <div class="card-rating">${b.rating}</div>
           <div class="card-content">
             <h3 style="margin: 0 0 5px 0; font-size: 1.2rem; text-transform: uppercase; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">${b.name}</h3>
-            <p style="margin: 0 0 15px 0; font-size: 0.9rem; opacity: 0.9; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">${b.brand} • ${b.abv}% • ${b.country}            <div class="card-buttons">
+            <p style="margin: 0 0 15px 0; font-size: 0.9rem; opacity: 0.9; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">${b.brand} • ${b.abv}% • ${b.country}</p>
+            <div class="card-buttons">
               <button class="btn btn-primary" data-id="${b.id}">Пробовал?</button>
               <button class="btn btn-secondary btn-details">Подробнее</button>
             </div>
@@ -672,35 +673,6 @@
           </div>
         `;
         grid.appendChild(card);
-      });
-
-      document.querySelectorAll('.btn-primary:not(.btn-close)').forEach(btn => {
-        btn.addEventListener('click', function(e) {
-          if (this.classList.contains('btn-details') || this.classList.contains('btn-close')) return;
-          
-          const id = this.getAttribute('data-id');
-          const current = localStorage.getItem('beer_' + id) === 'true';
-          
-          if (!current) {
-            localStorage.setItem('beer_' + id, 'true');
-            
-            // Находим пиво по ID и получаем его рейтинг
-            const beer = beers.find(b => b.id == id);
-            const rating = beer ? beer.rating : 3;
-            
-            // Получаем фразы для этого рейтинга
-            const phrases = ratingPhrases[rating] || ratingPhrases[3];
-            
-            // Выбираем случайную фразу
-            const randomPhrase = phrases[Math.floor(Math.random() * phrases.length)];
-            
-            this.textContent = randomPhrase;
-            setTimeout(() => { localStorage.setItem('beer_' + id, 'false'); render(); }, 3000);
-          } else {
-            localStorage.setItem('beer_' + id, 'false');
-            render();
-          }
-        });
       });
 
       // Обработчики кнопок "Пробовал?"
