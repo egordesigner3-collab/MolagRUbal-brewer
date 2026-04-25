@@ -559,9 +559,12 @@
         // === УМНЫЙ ПОИСК: СЛОВАРЬ РАСКЛАДОК ===
     // Карта соответствия клавиш: русская буква -> английская
     const layoutMap = {
-        'ф': 'a', 'ы': 'b', 'в': 'c', 'а': 'h', 'п': 'e', 'р': 'h', 'о': 'j', 'л': 'd', 'д': 'l', 'ж': ';', 'э': '\'',
+        // Верхний ряд
         'й': 'q', 'ц': 'w', 'у': 'e', 'к': 'r', 'е': 't', 'н': 'y', 'г': 'u', 'ш': 'i', 'щ': 'o', 'з': 'p', 'х': '[', 'ъ': ']',
-        'я': 'z', 'ч': 'x', 'с': 's', 'м': 'n', 'и': 'b', 'т': 'n', 'ь': 'm', 'б': ',', 'ю': '.'
+        // Средний ряд
+        'ф': 'a', 'ы': 's', 'в': 'd', 'а': 'f', 'п': 'g', 'р': 'h', 'о': 'j', 'л': 'k', 'д': 'l', 'ж': ';', 'э': '\'',
+        // Нижний ряд
+        'я': 'z', 'ч': 'x', 'с': 'c', 'м': 'v', 'и': 'b', 'т': 'n', 'ь': 'm', 'б': ',', 'ю': '.'
     };
     // Обратная карта (англ -> рус)
     const reverseLayoutMap = {};
@@ -614,29 +617,28 @@
       const sort = fSort.value;
 
       let filtered = beers.filter(b => {
-        // 1. Подготовка поискового запроса
         const cleanQuery = q.toLowerCase().trim();
         
-        // Если запрос пустой — пропускаем все (поиск не активен)
         const matchQ = !cleanQuery || (() => {
-            // Проверяем совпадение в оригинальном виде
             const name = b.name.toLowerCase();
             const brand = b.brand.toLowerCase();
             
             if (name.includes(cleanQuery) || brand.includes(cleanQuery)) return true;
             
-            // 2. Если не совпало, пробуем конвертировать раскладку запроса
-            // (Например, пользователь ввел "[fknbrf" вместо "Балтика")
             const convertedQuery = convertLayout(cleanQuery);
             if (convertedQuery && convertedQuery !== cleanQuery) {
-                if (name.includes(convertedQuery.toLowerCase()) || brand.includes(convertedQuery.toLowerCase())) {
-                    return true;
-                }
+                const cq = convertedQuery.toLowerCase();
+                if (name.includes(cq) || brand.includes(cq)) return true;
             }
             
-            // 3. Пробуем конвертировать само название пива (для надежности)
-            const convertedName = convertLayout(name);
-            if (convertedName.includes(cleanQuery)) return true;
+            const convName = convertLayout(name);
+            const convBrand = convertLayout(brand);
+            if (convName.includes(cleanQuery) || convBrand.includes(cleanQuery)) return true;
+            
+            if (convertedQuery && convertedQuery !== cleanQuery) {
+                const cq = convertedQuery.toLowerCase();
+                if (convName.includes(cq) || convBrand.includes(cq)) return true;
+            }
             
             return false;
         })();
